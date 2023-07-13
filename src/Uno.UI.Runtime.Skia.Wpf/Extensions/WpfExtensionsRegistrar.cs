@@ -11,7 +11,9 @@ using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.Wpf.Extensions.Helpers.Theming;
+using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming;
+using Uno.UI.Skia.Platform;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Windows.Graphics.Display;
@@ -33,6 +35,7 @@ internal static class WpfExtensionsRegistrar
 			return;
 		}
 
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new WpfCorePointerInputSource(o));
 		ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
