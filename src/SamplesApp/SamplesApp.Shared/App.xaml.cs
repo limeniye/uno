@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -36,6 +38,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Uno.Foundation.Extensibility;
 using MUXControlsTestApp.Utilities;
 using Windows.Storage;
+using System.Diagnostics.CodeAnalysis;
 #endif
 
 #if !HAS_UNO
@@ -68,6 +71,8 @@ namespace SamplesApp
 #else
 		private static ILogger _log;
 #endif
+
+		private static Windows.UI.Xaml.Window? _mainWindow;
 
 		static App()
 		{
@@ -108,6 +113,8 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+			EnsureMainWindow();
+
 #if __IOS__ && !__MACCATALYST__
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
@@ -130,7 +137,7 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+			var n = _mainWindow.Dispatcher.RunIdleAsync(
 				_ =>
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
@@ -148,7 +155,7 @@ namespace SamplesApp
 
 			AssertIssue8641NativeOverlayInitialized();
 
-			Windows.UI.Xaml.Window.Current.Activate();
+			_mainWindow.Activate();
 
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
 #if __SKIA__ && DEBUG
@@ -173,7 +180,18 @@ namespace SamplesApp
 		}
 #endif
 
-		private static bool HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
+		[MemberNotNull(nameof(_mainWindow))]
+		private void EnsureMainWindow()
+		{
+			_mainWindow ??=
+#if HAS_UNO_WINUI
+				new Windows.UI.Xaml.Window();
+#else
+				Windows.UI.Xaml.Window.IReallyUseCurrentWindow;
+#endif
+		}
+
+		private bool HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
@@ -183,10 +201,10 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
-				var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+				var n = _mainWindow.Dispatcher.RunIdleAsync(
 					_ =>
 					{
-						var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+						var n = _mainWindow.Dispatcher.RunAsync(
 							CoreDispatcherPriority.Normal,
 							async () =>
 							{
@@ -290,8 +308,9 @@ namespace SamplesApp
 		{
 			base.OnActivated(e);
 
+			EnsureMainWindow();
 			InitializeFrame();
-			Windows.UI.Xaml.Window.Current.Activate();
+			_mainWindow.Activate();
 
 			if (e.Kind == ActivationKind.Protocol)
 			{
@@ -319,7 +338,7 @@ namespace SamplesApp
 
 		private void InitializeFrame(string arguments = null)
 		{
-			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+			Frame rootFrame = _mainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
@@ -331,7 +350,7 @@ namespace SamplesApp
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
 				// Place the frame in the current Window
-				Windows.UI.Xaml.Window.Current.Content = rootFrame;
+				_mainWindow.Content = rootFrame;
 				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
@@ -557,7 +576,7 @@ namespace SamplesApp
 
 				var testId = Interlocked.Increment(ref _testIdCounter);
 
-				_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+				_ = _mainWindow.Dispatcher.RunAsync(
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
@@ -567,7 +586,7 @@ namespace SamplesApp
 							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 							if (statusBar != null)
 							{
-								_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+								_ = _mainWindow.Dispatcher.RunAsync(
 									Windows.UI.Core.CoreDispatcherPriority.Normal,
 									async () => await statusBar.HideAsync()
 								);
@@ -688,7 +707,7 @@ namespace SamplesApp
 				return;
 			}
 			// Temporarily add a TextBox to the current page's content to verify native overlay is available
-			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+			Frame rootFrame = _mainWindow.Content as Frame;
 			var textBox = new TextBox();
 			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
@@ -700,8 +719,8 @@ namespace SamplesApp
 		public void AssertInitialWindowSize()
 		{
 #if !__SKIA__ // Will be fixed as part of #8341
-			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Width > 0);
-			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
+			Assert.IsTrue(global::_mainWindow.Bounds.Width > 0);
+			Assert.IsTrue(global::_mainWindow.Bounds.Height > 0);
 #endif
 		}
 
