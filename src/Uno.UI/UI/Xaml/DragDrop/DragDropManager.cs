@@ -131,12 +131,12 @@ namespace Windows.UI.Xaml
 		}
 
 		private static void OnPointerMoved(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop?.ProcessMoved(e); //TODO:MZ:Multi-window
+			=> Window.IShouldntUseCurrentWindow.DragDrop?.ProcessMoved(e); //TODO:MZ:Multi-window
 
 		private static void OnPointerReleased(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop?.ProcessDropped(e); //TODO:MZ:Multi-window
+			=> Window.IShouldntUseCurrentWindow.DragDrop?.ProcessDropped(e); //TODO:MZ:Multi-window
 
 		private static void OnPointerCanceled(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop?.ProcessAborted(e); //TODO:MZ:Multi-window
+			=> Window.IShouldntUseCurrentWindow.DragDrop?.ProcessAborted(e); //TODO:MZ:Multi-window
 	}
 }
