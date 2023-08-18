@@ -67,9 +67,9 @@ namespace SamplesApp
 #endif
 	{
 #if HAS_UNO
-		private static Uno.Foundation.Logging.Logger _log;
+		private static Uno.Foundation.Logging.Logger? _log;
 #else
-		private static ILogger _log;
+		private static ILogger? _log;
 #endif
 
 		private static Windows.UI.Xaml.Window? _mainWindow;
@@ -187,7 +187,7 @@ namespace SamplesApp
 #if HAS_UNO_WINUI
 				new Windows.UI.Xaml.Window();
 #else
-				Windows.UI.Xaml.Window.SafeCurrent;
+				Windows.UI.Xaml.Window.CurrentSafe!;
 #endif
 		}
 
@@ -201,6 +201,11 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
+				if (_mainWindow is null)
+				{
+					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
+				}
+
 				var n = _mainWindow.Dispatcher.RunIdleAsync(
 					_ =>
 					{
@@ -336,13 +341,18 @@ namespace SamplesApp
 		}
 #endif
 
-		private void InitializeFrame(string arguments = null)
+		private void InitializeFrame(string? arguments = null)
 		{
-			Frame rootFrame = _mainWindow.Content as Frame;
+			if (_mainWindow is null)
+			{
+				throw new InvalidOperationException("Main window must be initialized before Frame");
+			}
+
+			var rootFrame = _mainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
-			if (rootFrame == null)
+			if (rootFrame is null)
 			{
 				// Create a Frame to act as the navigation context and navigate to the first page
 				rootFrame = new Frame();
@@ -354,7 +364,7 @@ namespace SamplesApp
 				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
-			if (rootFrame.Content == null)
+			if (rootFrame.Content is null)
 			{
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
@@ -425,7 +435,7 @@ namespace SamplesApp
 			}
 			catch (Exception ex)
 			{
-				_log.Error($"Could not navigate to initial sample - {ex}");
+				_log?.Error($"Could not navigate to initial sample - {ex}");
 			}
 			return false;
 		}
@@ -458,9 +468,14 @@ namespace SamplesApp
 
 		public static void ConfigureFilters()
 		{
+			if (_log is null)
+			{
+				throw new InvalidOperationException("Logging was not initialized");
+			}
+
 #if HAS_UNO
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => _log.Error("UnobservedTaskException", e.Exception);
-			AppDomain.CurrentDomain.UnhandledException += (s, e) => _log.Error("UnhandledException", e.ExceptionObject as Exception);
+			AppDomain.CurrentDomain.UnhandledException += (s, e) => _log.Error("UnhandledException", (e.ExceptionObject as Exception) ?? new Exception("Unknown exception " + e.ExceptionObject));
 #endif
 			var factory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
 			{
@@ -570,6 +585,11 @@ namespace SamplesApp
 
 		public static string RunTest(string metadataName)
 		{
+			if (_mainWindow is null)
+			{
+				throw new InvalidOperationException("Cannot run tests until main window is initialized.");
+			}
+
 			try
 			{
 				Console.WriteLine($"Initiate Running Test {metadataName}");
@@ -707,12 +727,17 @@ namespace SamplesApp
 				return;
 			}
 			// Temporarily add a TextBox to the current page's content to verify native overlay is available
-			Frame rootFrame = _mainWindow.Content as Frame;
+			if (_mainWindow?.Content is not Frame rootFrame)
+			{
+				throw new InvalidOperationException("Native overlay verification executed too early");
+			}
+
 			var textBox = new TextBox();
 			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
 			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+			Assert.IsNotNull(textBoxViewExtension);
+			Assert.IsTrue(textBoxViewExtension!.IsOverlayLayerInitialized(rootFrame.XamlRoot));
 #endif
 		}
 
