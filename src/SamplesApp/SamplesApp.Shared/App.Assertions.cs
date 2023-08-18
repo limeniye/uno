@@ -1,11 +1,13 @@
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Foundation.Extensibility;
-using Uno.UI.Xaml.Controls.Extensions;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
+#if HAS_UNO
+using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Controls.Extensions;
+#endif
 
 namespace SamplesApp;
 
@@ -84,8 +86,8 @@ partial class App
 	public void AssertInitialWindowSize()
 	{
 #if !__SKIA__ // Will be fixed as part of #8341
-		Assert.IsTrue(global::_mainWindow.Bounds.Width > 0);
-		Assert.IsTrue(global::_mainWindow.Bounds.Height > 0);
+		Assert.IsTrue(_mainWindow.Bounds.Width > 0);
+		Assert.IsTrue(_mainWindow.Bounds.Height > 0);
 #endif
 	}
 
