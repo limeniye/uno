@@ -28,16 +28,16 @@ namespace Windows.UI.Xaml
 		{
 			public KeyboardManager()
 			{
-				if (Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow is not null) //TODO:MZ:Multi-window support
+				if (Window.IShouldntUseCurrentWindow!.IShouldntUseCoreWindow is not null) //TODO:MZ:Multi-window support
 				{
-					Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
-					Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
+					Window.IShouldntUseCurrentWindow!.IShouldntUseCoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
+					Window.IShouldntUseCurrentWindow!.IShouldntUseCoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
 				}
 			}
 
 			private void InitiateKeyDownBubblingFlow(CoreWindow sender, KeyEventArgs args)
 			{
-				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.IShouldntUseCurrentWindow.Content;
+				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.IShouldntUseCurrentWindow!.Content;
 
 				originalSource!.RaiseEvent( //TODO:MZ:Multi-window support
 					KeyDownEvent,
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml
 
 			private void InitiateKeyUpBubblingFlow(CoreWindow sender, KeyEventArgs args)
 			{
-				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.IShouldntUseCurrentWindow.Content;
+				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.IShouldntUseCurrentWindow!.Content;
 
 				originalSource!.RaiseEvent( //TODO:MZ:Multi-window support
 					KeyUpEvent,
