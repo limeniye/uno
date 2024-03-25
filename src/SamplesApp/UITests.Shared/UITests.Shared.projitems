@@ -1790,6 +1790,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlock\RichTextBlock_Paragraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Arabic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4622,11 +4626,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -6085,6 +6089,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyoutSubItem_Placement.xaml.cs">
       <DependentUpon>MenuFlyoutSubItem_Placement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlock\RichTextBlock_Paragraph.xaml.cs">
+      <DependentUpon>RichTextBlock_Paragraph.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Keyboard_Navigation.xaml.cs">
       <DependentUpon>TextBox_Keyboard_Navigation.xaml</DependentUpon>
@@ -8116,10 +8123,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml.cs">
       <DependentUpon>MaskBrushTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml.cs">
       <DependentUpon>EffectBrushTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
       <DependentUpon>XamlCompositionBrushBaseTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml.cs">
@@ -9520,10 +9527,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\TimePicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ToolTip.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\TreeView.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\Uno200x200.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\Uno50x50.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\WinUI.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\LightMap.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Uno200x200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Uno50x50.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\WinUI.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\LightMap.png" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4770-lady-and-dove.json" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4930-checkbox-animation.json" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\lottie-logo.json" />
